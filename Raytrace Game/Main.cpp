@@ -21,14 +21,11 @@ int main(int argc, char* argv[])
     SDL_Renderer* renderer = NULL;
     SDL_Surface* windowScreen = NULL;
     const Uint8* keystate;
-    float speed = 0.01;
-    float direction = 5;
-    float rotationSpeed = 0.001;
 
     px = 300;
     py = 300;
-    pdx = cos(pa) * direction;
-    pdy = sin(pa) * direction;
+    pdx = cos(pa);
+    pdy = sin(pa);
 
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -40,7 +37,7 @@ int main(int argc, char* argv[])
     // game loop
     while (1) {
 
-        /* event hangling */
+        /* event handling */
         SDL_Event e;
         if (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
@@ -53,12 +50,57 @@ int main(int argc, char* argv[])
             }
         }
 
-        /* handle keyboard presses */
+        // --- handle keyboard presses ---
+
+        int prevx = px;     // the x position before the player moves
+        int prevy = py;     // the y position before the player moves
+
         keystate = SDL_GetKeyboardState(NULL);
-        if (keystate[SDL_SCANCODE_W]) { px += pdx * speed; py += pdy * speed; }
-        if (keystate[SDL_SCANCODE_S]) { px -= pdx * speed; py -= pdy * speed; }
-        if (keystate[SDL_SCANCODE_A]) { pa -= rotationSpeed; if (pa < 0) { pa += 2 * PI; } pdx = cos(pa) * direction; pdy = sin(pa) * direction; }
-        if (keystate[SDL_SCANCODE_D]) { pa += rotationSpeed; if (pa > 2*PI) { pa -= 2 * PI; } pdx = cos(pa) * direction; pdy = sin(pa) * direction; }
+        if (keystate[SDL_SCANCODE_W]) {             // forward
+            px += pdx * speed;
+            py += pdy * speed;
+        }
+        if (keystate[SDL_SCANCODE_S]) {             // backward
+            px -= pdx * speed;
+            py -= pdy * speed;
+        }
+        if (keystate[SDL_SCANCODE_A]) {
+            if (keystate[SDL_SCANCODE_LSHIFT]) {    // strafe left
+                float theta = pa - PI2;     // add 90 degrees to player angle
+                px += cos(theta) * speed;   // break vector into x & y
+                py += sin(theta) * speed;
+            }
+            else {
+                pa -= rotationSpeed;
+                if (pa < 0) {
+                    pa += 2 * PI;
+                }
+                pdx = cos(pa);
+                pdy = sin(pa);
+            }
+        }
+        if (keystate[SDL_SCANCODE_D]) {             // strafe right
+            if (keystate[SDL_SCANCODE_LSHIFT]) {
+                float theta = pa + PI2;     // add 90 degrees to player angle
+                px += cos(theta) * speed; // see above
+                py += sin(theta) * speed;
+            }
+            else {
+                pa += rotationSpeed;
+                if (pa > 2 * PI) {
+                    pa -= 2 * PI;
+                }
+                pdx = cos(pa);
+                pdy = sin(pa);
+            }
+        }
+
+        printf("x: %f\ny: %f\n\n", px, py);
+
+        if (map[(int)(py / mapS) * 8 + (int)(px / mapS)]) {   // move player to previous position if in a tile
+            px = prevx;
+            py = prevy;
+        }
       
         /* clear the screen */
         SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
