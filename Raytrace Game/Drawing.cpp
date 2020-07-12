@@ -6,7 +6,7 @@
 #include "Definitions.h"
 
 SDL_Rect wall = { 0, 0, mapS - 1, mapS - 1 };
-SDL_Rect wall3d = { 0, 0, 6, 8 };
+SDL_Rect wall3d = { 0, 0, rayWidth, 8 };
 SDL_Rect player = { px, py, 10, 10 };
 
 // draw the player to the screen
@@ -60,7 +60,7 @@ void drawRays2D(SDL_Renderer* renderer) {
     float disT;
 
     // initialize first ray angle
-    ra = pa - DEGREE * 30;
+    ra = pa - DEGREE * fov / 2;
 
     if (ra < 0) {
         ra += 2 * PI;
@@ -69,7 +69,7 @@ void drawRays2D(SDL_Renderer* renderer) {
         ra -= 2 * PI;
     }
 
-    for (r = 0; r < 120; r++) {
+    for (r = 0; r < numberOfRays; r++) {
         // --- Check horizontal lines ---
 
         dof = 0;
@@ -183,8 +183,7 @@ void drawRays2D(SDL_Renderer* renderer) {
         float lineO = 160 - lineH / 2;      // line offset
 
         // actually draw the 3d walls
-        int rayWidth = sWidth / 120;  // ray width is screen width in pixels / number of rays
-        wall3d.x = r * rayWidth;// +530 - wall3d.w;
+        wall3d.x = r * rayWidth;
         wall3d.y = lineO;
         wall3d.h = lineH;
         SDL_RenderFillRect(renderer, &wall3d);
@@ -194,7 +193,7 @@ void drawRays2D(SDL_Renderer* renderer) {
         //SDL_RenderDrawLine(renderer, xcenter, ycenter, rx, ry);
 
         // increase ra by 1/2 degree
-        ra += DEGREE / 2;
+        ra += DEGREE * ((float)fov / numberOfRays);
 
         // make sure ra is a correct unit in the unit circle (wrap value around)
         if (ra < 0) {
