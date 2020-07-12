@@ -44,5 +44,8 @@
     <ClInclude Include="Drawing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Definitions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

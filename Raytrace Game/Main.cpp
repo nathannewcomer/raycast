@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Drawing.h"
 #include "Helpers.h"
+#include "Definitions.h"
 
 /* draw line coming out of player
 void drawLine(SDL_Renderer* r) {
@@ -23,8 +24,6 @@ int main(int argc, char* argv[])
     float speed = 0.01;
     float direction = 5;
     float rotationSpeed = 0.001;
-    int width = 1024;
-    int height = 512;
 
     px = 300;
     py = 300;
@@ -33,7 +32,7 @@ int main(int argc, char* argv[])
 
     SDL_Init(SDL_INIT_VIDEO);
 
-    window = SDL_CreateWindow("Raytrace", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, 0);
+    window = SDL_CreateWindow("Raytrace", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, sWidth, sHeight, 0);
     windowScreen = SDL_GetWindowSurface(window);
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -66,9 +65,9 @@ int main(int argc, char* argv[])
         SDL_RenderClear(renderer);
 
         /* drawing */
-        drawMap2D(renderer);
+        //drawMap2D(renderer);
         //drawLine(renderer);
-        drawPlayer(renderer);
+        //drawPlayer(renderer);
         drawRays2D(renderer);
 
         /* show the contents of the screen */

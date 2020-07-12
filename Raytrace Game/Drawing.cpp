@@ -3,10 +3,10 @@
 #include "Drawing.h"
 #include "Helpers.h"
 #include "Player.h"
-#include <stdio.h>
+#include "Definitions.h"
 
 SDL_Rect wall = { 0, 0, mapS - 1, mapS - 1 };
-SDL_Rect wall3d = { 0, 0, 4, 8 };
+SDL_Rect wall3d = { 0, 0, 6, 8 };
 SDL_Rect player = { px, py, 10, 10 };
 
 // draw the player to the screen
@@ -47,10 +47,21 @@ void drawMap2D(SDL_Renderer* r) {
 void drawRays2D(SDL_Renderer* renderer) {
     int xcenter = px + player.w / 2, ycenter = py + player.h / 2;
 
-    int r = 0, mx = 0, my = 0, mp = 0, dof;
-    float rx = 0, ry = 0, ra, xo = 0, yo = 0, disT;
+    int r = 0;      // number of rays (used in for loop)
+    int mx = 0;
+    int my = 0;
+    int mp = 0;
+    int dof;        // depth of field
+    float rx = 0;
+    float ry = 0;
+    float ra;       // ray angle
+    float xo = 0;
+    float yo = 0;
+    float disT;
 
+    // initialize first ray angle
     ra = pa - DEGREE * 30;
+
     if (ra < 0) {
         ra += 2 * PI;
     }
@@ -62,7 +73,9 @@ void drawRays2D(SDL_Renderer* renderer) {
         // --- Check horizontal lines ---
 
         dof = 0;
-        float disH = 1000000, hx = px, hy = py;
+        float disH = 1000000;
+        float hx = px;
+        float hy = py;
         float aTan = -1 / tan(ra);
 
         if (ra > PI) {  // looking up
@@ -123,6 +136,7 @@ void drawRays2D(SDL_Renderer* renderer) {
             ry = py;
             dof = 8;
         }
+
         while (dof < 8) {
             mx = (int)(rx) >> 6;
             my = (int)(ry) >> 6;
@@ -168,24 +182,21 @@ void drawRays2D(SDL_Renderer* renderer) {
         float lineH = (mapS * 320) / disT;  // line height
         float lineO = 160 - lineH / 2;      // line offset
 
-        // center ray
-        if (r == 60) {
-            printf("disT: %f\nlineH: %f\n\n", disT, lineH);
-        }
-
         // actually draw the 3d walls
-        wall3d.x = r * 4 + 530 - wall3d.w;
+        int rayWidth = sWidth / 120;  // ray width is screen width in pixels / number of rays
+        wall3d.x = r * rayWidth;// +530 - wall3d.w;
         wall3d.y = lineO;
         wall3d.h = lineH;
         SDL_RenderFillRect(renderer, &wall3d);
 
         // draw angle line
-        SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-        SDL_RenderDrawLine(renderer, xcenter, ycenter, rx, ry);
+        //SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+        //SDL_RenderDrawLine(renderer, xcenter, ycenter, rx, ry);
 
-        // increase ra by 1 degree
+        // increase ra by 1/2 degree
         ra += DEGREE / 2;
 
+        // make sure ra is a correct unit in the unit circle (wrap value around)
         if (ra < 0) {
             ra += 2 * PI;
         }
