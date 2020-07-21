@@ -183,10 +183,7 @@ void drawRays2D(SDL_Renderer* renderer) {
         float lineO = 160 - lineH / 2;      // line offset
 
         // actually draw the 3d walls
-        wall3d.x = r * rayWidth;
-        wall3d.y = lineO;
-        wall3d.h = lineH;
-        SDL_RenderFillRect(renderer, &wall3d);
+        SDL_RenderDrawLine(renderer, r, lineO, r, lineO + lineH);
 
         // draw angle line
         //SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
