@@ -17,5 +17,5 @@ const int numberOfRays = sWidth;                // number of rays to draw
 const int fov = 60;                             // field of view of the player
 
 // -- Movement ---
-const float speed = 50;                         // how fast the player moves
+const float speed = 100;                         // how fast the player moves
 const float rotationSpeed = 5;                  // how fast the player rotates

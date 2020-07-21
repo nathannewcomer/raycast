@@ -58,7 +58,6 @@ int main(int argc, char* argv[])
 
         currentTime = SDL_GetTicks();                       // get the current time to calculate time delta
         timeDelta = (currentTime - previousTime) / 1000.0;  // time delta in seconds
-        printf("timedelta: %f\n", timeDelta);
 
         int prevx = px;                                     // the x position before the player moves
         int prevy = py;                                     // the y position before the player moves
