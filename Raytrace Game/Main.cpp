@@ -21,6 +21,9 @@ int main(int argc, char* argv[])
     SDL_Renderer* renderer = NULL;
     SDL_Surface* windowScreen = NULL;
     const Uint8* keystate;
+    Uint32 previousTime = 0, currentTime;
+    float timeDelta;
+
 
     px = 300;
     py = 300;
@@ -34,7 +37,8 @@ int main(int argc, char* argv[])
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     
-    // game loop
+    // --- game loop ---
+
     while (1) {
 
         /* event handling */
@@ -52,26 +56,30 @@ int main(int argc, char* argv[])
 
         // --- handle keyboard presses ---
 
-        int prevx = px;     // the x position before the player moves
-        int prevy = py;     // the y position before the player moves
+        currentTime = SDL_GetTicks();                       // get the current time to calculate time delta
+        timeDelta = (currentTime - previousTime) / 1000.0;  // time delta in seconds
+        printf("timedelta: %f\n", timeDelta);
+
+        int prevx = px;                                     // the x position before the player moves
+        int prevy = py;                                     // the y position before the player moves
 
         keystate = SDL_GetKeyboardState(NULL);
-        if (keystate[SDL_SCANCODE_W]) {             // forward
-            px += pdx * speed;
-            py += pdy * speed;
+        if (keystate[SDL_SCANCODE_W]) {                     // forward
+            px += pdx * speed * timeDelta;
+            py += pdy * speed * timeDelta;
         }
-        if (keystate[SDL_SCANCODE_S]) {             // backward
-            px -= pdx * speed;
-            py -= pdy * speed;
+        if (keystate[SDL_SCANCODE_S]) {                     // backward
+            px -= pdx * speed * timeDelta;
+            py -= pdy * speed * timeDelta;
         }
         if (keystate[SDL_SCANCODE_A]) {
-            if (keystate[SDL_SCANCODE_LSHIFT]) {    // strafe left
-                float theta = pa - PI2;     // add 90 degrees to player angle
-                px += cos(theta) * speed;   // break vector into x & y
-                py += sin(theta) * speed;
+            if (keystate[SDL_SCANCODE_LSHIFT]) {            // strafe left
+                float theta = pa - PI2;                     // add 90 degrees to player angle
+                px += cos(theta) * speed * timeDelta;       // break vector into x & y
+                py += sin(theta) * speed * timeDelta;
             }
-            else {
-                pa -= rotationSpeed;
+            else {                                          // rotate left
+                pa -= rotationSpeed * timeDelta;
                 if (pa < 0) {
                     pa += 2 * PI;
                 }
@@ -79,14 +87,14 @@ int main(int argc, char* argv[])
                 pdy = sin(pa);
             }
         }
-        if (keystate[SDL_SCANCODE_D]) {             // strafe right
+        if (keystate[SDL_SCANCODE_D]) {                     // strafe right
             if (keystate[SDL_SCANCODE_LSHIFT]) {
-                float theta = pa + PI2;     // add 90 degrees to player angle
-                px += cos(theta) * speed; // see above
-                py += sin(theta) * speed;
+                float theta = pa + PI2;                     // add 90 degrees to player angle
+                px += cos(theta) * speed * timeDelta;       // see above
+                py += sin(theta) * speed * timeDelta;
             }
             else {
-                pa += rotationSpeed;
+                pa += rotationSpeed * timeDelta;            // rotate right
                 if (pa > 2 * PI) {
                     pa -= 2 * PI;
                 }
@@ -95,18 +103,20 @@ int main(int argc, char* argv[])
             }
         }
 
-        printf("x: %f\ny: %f\n\n", px, py);
+        previousTime = currentTime;
 
-        if (map[(int)(py / mapS) * 8 + (int)(px / mapS)]) {   // move player to previous position if in a tile
+        if (map[(int)(py / mapS) * 8 + (int)(px / mapS)]) { // move player to previous position if collision occurs
             px = prevx;
             py = prevy;
         }
       
-        /* clear the screen */
+        // --- drawing ---
+
+        // clear the screen
         SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
         SDL_RenderClear(renderer);
 
-        /* drawing */
+        /* draw maps */
         //drawMap2D(renderer);
         //drawLine(renderer);
         //drawPlayer(renderer);

@@ -6,7 +6,6 @@
 #include "Definitions.h"
 
 SDL_Rect wall = { 0, 0, mapS - 1, mapS - 1 };
-SDL_Rect wall3d = { 0, 0, rayWidth, 8 };
 SDL_Rect player = { px, py, 10, 10 };
 
 // draw the player to the screen

@@ -13,10 +13,9 @@ const float DEGREE = 0.0174533;                 // degree in radians
 // --- Drawing ---
 const int sWidth = 720;                         // screen width
 const int sHeight = 540;                        // screen height
-const int numberOfRays = sWidth;                   // number of rays to draw
-const int rayWidth = sWidth / numberOfRays;     // width of rays
+const int numberOfRays = sWidth;                // number of rays to draw
 const int fov = 60;                             // field of view of the player
 
 // -- Movement ---
-const float speed = 0.5;
-const float rotationSpeed = 0.005;
+const float speed = 50;                         // how fast the player moves
+const float rotationSpeed = 5;                  // how fast the player rotates

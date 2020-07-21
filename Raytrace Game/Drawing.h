@@ -4,7 +4,6 @@
 #include "Player.h"
 
 // --- Variables ---
-extern SDL_Rect wall;
 extern SDL_Rect wall3d;
 extern SDL_Rect player;
 
